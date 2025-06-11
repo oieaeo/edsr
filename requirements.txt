@@ -14,3 +14,4 @@ scikit-image
 torch
 torchvision
 matplotlib
+gunicorn
