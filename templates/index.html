@@ -6,34 +6,13 @@
     <title>AI VideoStream - Deep Learning Super-Resolution</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Reset and base */
-        :root {
-            --bg-dark-primary: #111827;
-            --bg-dark-secondary: #1f2937;
-            --border-color: #374151;
-            --text-primary: #d1d5db;
-            --text-secondary: #9ca3af;
-            --accent-primary: #4f46e5;
-            --accent-secondary: #a5b4fc;
-            --danger-primary: #ef4444;
-            --danger-secondary: #f87171;
-        }
+        /* CSS Anda tidak perlu diubah, jadi saya sembunyikan agar lebih ringkas */
+        :root { --bg-dark-primary: #111827; --bg-dark-secondary: #1f2937; --border-color: #374151; --text-primary: #d1d5db; --text-secondary: #9ca3af; --accent-primary: #4f46e5; --accent-secondary: #a5b4fc; --danger-primary: #ef4444; --danger-secondary: #f87171; }
         *, *::before, *::after { box-sizing: border-box; }
-        body {
-            margin: 0;
-            background: var(--bg-dark-secondary);
-            color: var(--text-primary);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            line-height: 1.5;
-            min-height: 100vh;
-        }
+        body { margin: 0; background: var(--bg-dark-secondary); color: var(--text-primary); font-family: 'Inter', system-ui, -apple-system, sans-serif; line-height: 1.5; min-height: 100vh; }
         main { z-index: 1; position: relative; }
         video { max-width: 100%; height: auto; display: block; }
-        header {
-            position: sticky; top: 0; background: var(--bg-dark-primary);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 2rem; z-index: 100; box-shadow: 0 1px 3px rgb(0 0 0 / 0.5);
-        }
+        header { position: sticky; top: 0; background: var(--bg-dark-primary); border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; z-index: 100; box-shadow: 0 1px 3px rgb(0 0 0 / 0.5); }
         nav { max-width: 1200px; margin: 0 auto; }
         .logo { font-weight: 700; font-size: 1.75rem; color: #f9fafb; }
         .container { max-width: 1200px; margin: 3rem auto; padding: 0 1rem; }
@@ -50,13 +29,7 @@
         .upload-subtext { font-size: 0.9rem; color: #6b7280; }
         .file-input { display: none; }
         .video-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
-        .video-player {
-            position: relative;
-            border-radius: 0.75rem;
-            overflow: hidden;
-            background: var(--bg-dark-secondary);
-            border: 1px solid var(--border-color);
-        }
+        .video-player { position: relative; border-radius: 0.75rem; overflow: hidden; background: var(--bg-dark-secondary); border: 1px solid var(--border-color); }
         .video-label { position: absolute; top: 0.5rem; left: 0.5rem; background: var(--accent-primary); color: #eef2ff; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; z-index: 10; }
         .video-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #6b7280; font-size: 1.5rem; gap: 0.5rem; background: var(--border-color); aspect-ratio: 16 / 9; }
         .video-placeholder > div:first-child { font-size: 3rem; }
@@ -81,69 +54,23 @@
         .charts-container { display: none; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
         .charts-container.visible { display: grid; }
         .chart-wrapper { background-color: var(--bg-dark-primary); padding: 1.5rem; border-radius: 0.75rem; border: 1px solid var(--border-color); min-height: 300px; }
-        
         #historySection h2 { color: #f9fafb; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
-        .history-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-            align-items: start;
-        }
-        .history-item { 
-            background: var(--bg-dark-primary); 
-            border: 1px solid var(--border-color); 
-            border-radius: 0.75rem; 
-            overflow: hidden; 
-            transition: transform 0.2s, box-shadow 0.2s; 
-        }
+        .history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; align-items: start; }
+        .history-item { background: var(--bg-dark-primary); border: 1px solid var(--border-color); border-radius: 0.75rem; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
         .history-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
         .history-videos { display: flex; background: var(--border-color); }
-        .history-videos video {
-            width: 50%;
-            height: auto; 
-        }
+        .history-videos video { width: 50%; height: auto; }
         .history-info { padding: 1rem; }
         .history-info p { margin: 0 0 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
         .history-info p strong { color: var(--text-primary); }
-        
-        .history-item-actions {
-            margin-top: 1rem;
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .history-item-button {
-            flex-grow: 1;
-            background-color: var(--accent-primary);
-            color: white;
-            border: none;
-            padding: 0.6rem 1rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
-        .history-item-button:hover {
-             background-color: #4338ca;
-        }
-        .history-item-button.delete-btn {
-            background-color: var(--danger-primary);
-        }
-        .history-item-button.delete-btn:hover {
-            background-color: #ca2c2c;
-        }
-        .error-msg {
-            width: 100%;
-            color: var(--danger-secondary);
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-        }
-        
+        .history-item-actions { margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .history-item-button { flex-grow: 1; background-color: var(--accent-primary); color: white; border: none; padding: 0.6rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 600; transition: background-color 0.2s; }
+        .history-item-button:hover { background-color: #4338ca; }
+        .history-item-button.delete-btn { background-color: var(--danger-primary); }
+        .history-item-button.delete-btn:hover { background-color: #ca2c2c; }
+        .error-msg { width: 100%; color: var(--danger-secondary); font-size: 0.875rem; margin-top: 0.5rem; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @media (max-width: 768px) {
-            .video-comparison, .charts-container, .history-grid { grid-template-columns: 1fr; }
-            .hero-title { font-size: 2.25rem; }
-        }
+        @media (max-width: 768px) { .video-comparison, .charts-container, .history-grid { grid-template-columns: 1fr; } .hero-title { font-size: 2.25rem; } }
     </style>
 </head>
 <body>
@@ -231,9 +158,15 @@
         init(); animate();
     }
 
+    // ===================================================================
+    // PERUBAHAN UNTUK RENDER: URL Backend dibuat fleksibel
+    // ===================================================================
+    // Dengan mengosongkan URL, browser akan otomatis menggunakan domain
+    // saat ini (misal: 'https://aplikasi-anda.onrender.com') sebagai basis.
     const BACKEND_URL = '';
+    // ===================================================================
     
-    // Elemen DOM
+    // Elemen DOM (tidak berubah)
     const videoInput = document.getElementById('videoInput');
     const uploadContainer = document.getElementById('uploadContainer');
     const uploadArea = document.getElementById('uploadArea');
@@ -261,7 +194,10 @@
     let psnrChart = null;
     let ssimChart = null;
     
-    // Event listeners untuk upload
+    // Semua logika JavaScript lainnya tidak perlu diubah.
+    // Kode sudah benar dalam menggabungkan BACKEND_URL dengan path dari server.
+    // Contoh: enhancedVideo.src = BACKEND_URL + data.enhanced_video_url;
+
     ['dragover', 'drop', 'dragleave'].forEach(ev => uploadContainer.addEventListener(ev, e => e.preventDefault()));
     uploadContainer.addEventListener('dragover', () => uploadContainer.classList.add('dragover'));
     uploadContainer.addEventListener('dragleave', () => uploadContainer.classList.remove('dragover'));
@@ -276,40 +212,32 @@
             console.error('Harap unggah file video.');
             return;
         }
-        
         resetUIForNewUpload();
-
         const videoURL = URL.createObjectURL(file);
         originalVideo.src = videoURL;
         originalVideo.style.display = 'block';
         originalPlaceholder.style.display = 'none';
-
         originalVideo.addEventListener('loadedmetadata', () => {
              const playerContainer = originalVideo.closest('.video-player');
              if (playerContainer) {
                  playerContainer.style.aspectRatio = `${originalVideo.videoWidth} / ${originalVideo.videoHeight}`;
              }
         }, { once: true });
-        
         resultContainer.style.display = 'block';
         processButton.disabled = false;
         processButton.classList.add('enabled');
-        
         uploadArea.innerHTML = `<div class="upload-icon">✅</div><div class="upload-text">Video Siap Diproses</div><div class="upload-subtext">${file.name}</div>`;
     }
 
     function resetUIForNewUpload() {
         originalVideo.closest('.video-player').style.aspectRatio = '16 / 9';
         enhancedVideo.closest('.video-player').style.aspectRatio = '16 / 9';
-        
         originalVideo.src = '';
         originalVideo.style.display = 'none';
         originalPlaceholder.style.display = 'flex';
-
         enhancedVideo.src = '';
         enhancedVideo.style.display = 'none';
         enhancedPlaceholder.style.display = 'flex';
-        
         processButton.textContent = '🚀 Mulai Super-Resolution';
         metricsSection.classList.remove('visible');
         chartsContainer.classList.remove('visible');
@@ -320,12 +248,10 @@
     function startProgressTracking(sessionId) {
         if (eventSource) eventSource.close();
         eventSource = new EventSource(`${BACKEND_URL}/progress/${sessionId}`);
-        
         eventSource.onmessage = event => {
             try {
                 const data = JSON.parse(event.data);
                 updateProgressUI(data);
-
                 if (data.progress >= 100 || data.error) {
                     eventSource.close();
                     if (data.final_result) {
@@ -338,7 +264,6 @@
                 console.error('Error parsing progress data:', error);
             }
         };
-
         eventSource.onerror = () => {
             handleError('Koneksi ke server terputus.');
             eventSource.close();
@@ -350,7 +275,6 @@
         loadingProgress.style.width = `${progress}%`;
         loadingPercentage.textContent = `${progress}%`;
         loadingText.textContent = status;
-
         if (current_psnr && current_ssim) {
             psnrValue.textContent = current_psnr.toFixed(2);
             ssimValue.textContent = current_ssim.toFixed(4);
@@ -359,14 +283,11 @@
 
     async function processVideo() {
         if (!videoInput.files[0] || isProcessing) return;
-        
         const file = videoInput.files[0];
         isProcessing = true;
         setUIToLoading();
-
         const formData = new FormData();
         formData.append('video', file);
-
         try {
             const response = await fetch(`${BACKEND_URL}/process`, { method: 'POST', body: formData });
             const result = await response.json();
@@ -394,18 +315,15 @@
 
     function completeProcessing(data) {
         loadingContainer.classList.remove('active');
-        
         enhancedVideo.src = BACKEND_URL + data.enhanced_video_url;
         enhancedVideo.style.display = 'block';
         enhancedPlaceholder.style.display = 'none';
-
         enhancedVideo.addEventListener('loadedmetadata', () => {
              const playerContainer = enhancedVideo.closest('.video-player');
              if (playerContainer) {
                  playerContainer.style.aspectRatio = `${enhancedVideo.videoWidth} / ${enhancedVideo.videoHeight}`;
              }
         }, { once: true });
-
         const { metrics } = data;
         if (metrics) {
             psnrValue.textContent = metrics.psnr_avg;
@@ -413,7 +331,6 @@
             updateCharts(metrics.psnr_per_frame, metrics.ssim_per_frame);
             chartsContainer.classList.add('visible');
         }
-        
         processingTimeValue.textContent = data.processing_time + 's';
         processButton.textContent = '✅ Proses Selesai';
         isProcessing = false;
@@ -463,16 +380,13 @@
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const historyData = await response.json();
             historyGrid.innerHTML = ''; 
-
             if (historyData.length === 0) {
                 historyGrid.innerHTML = '<p style="color: var(--text-secondary);">Belum ada riwayat pemrosesan.</p>';
                 return;
             }
-
             historyData.forEach(item => {
                 const itemEl = document.createElement('div');
                 itemEl.className = 'history-item';
-                
                 itemEl.innerHTML = `
                     <div class="history-videos">
                         <video src="${BACKEND_URL + item.original_video_url}" loop muted playsinline preload="metadata"></video>
@@ -488,28 +402,21 @@
                         </div>
                     </div>
                 `;
-                
                 itemEl.querySelector('.load-btn').addEventListener('click', () => {
                     loadFromHistory(item);
                 });
-
-                // --- PERBAIKAN ---
-                // Tentukan identifier unik: gunakan item.id jika ada, jika tidak gunakan item.original_video_url.
                 const identifier = item.id || item.original_video_url;
                 itemEl.querySelector('.delete-btn').addEventListener('click', (e) => {
                     e.stopPropagation();
                     deleteHistoryItem(identifier, itemEl);
                 });
-                
                 const videos = itemEl.querySelectorAll('.history-videos video');
-                
                 itemEl.addEventListener('mouseenter', () => {
                     videos.forEach(v => v.play().catch(e => console.log("Gagal memulai video, interaksi pengguna mungkin diperlukan.")));
                 });
                 itemEl.addEventListener('mouseleave', () => {
                     videos.forEach(v => v.pause());
                 });
-
                 historyGrid.appendChild(itemEl);
             });
         } catch (error) {
@@ -522,15 +429,11 @@
         }
     }
     
-    // --- PERBAIKAN ---
-    // Fungsi diubah untuk mengirim POST request dengan identifier di dalam body.
-    // Ini memungkinkan backend untuk menangani berbagai jenis identifier (ID atau URL).
     async function deleteHistoryItem(identifier, itemElement) {
         if (!identifier) {
             console.error('Gagal menghapus: Tidak ada identifier yang diberikan.');
             return;
         }
-
         try {
             const response = await fetch(`${BACKEND_URL}/history/delete`, {
                 method: 'POST',
@@ -539,34 +442,25 @@
                 },
                 body: JSON.stringify({ identifier: identifier })
             });
-
             const result = await response.json();
             if (!response.ok) {
-                // Tangani error dari server, misalnya jika item tidak ditemukan (404)
                 throw new Error(result.error || 'Gagal menghapus item dari server.');
             }
-
             console.log(result.message);
-            // Animasi penghapusan item dari daftar
             itemElement.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
             itemElement.style.transform = 'scale(0.95)';
             itemElement.style.opacity = '0';
-            
             setTimeout(() => {
                 itemElement.remove();
                 if (historyGrid.children.length === 0) {
                     historyGrid.innerHTML = '<p style="color: var(--text-secondary);">Belum ada riwayat pemrosesan.</p>';
                 }
             }, 400);
-
         } catch (error) {
             console.error('Gagal menghapus riwayat:', error.message);
-            // Memberi tahu pengguna tentang kegagalan tanpa menggunakan alert()
             const errorP = document.createElement('p');
             errorP.textContent = `Gagal menghapus: ${error.message}`;
             errorP.className = 'error-msg';
-            
-            // Hapus pesan error lama jika ada sebelum menambahkan yang baru
             const existingError = itemElement.querySelector('.error-msg');
             if (existingError) {
                 existingError.remove();
@@ -578,7 +472,6 @@
     function loadFromHistory(item) {
         resetUIForNewUpload();
         resultContainer.style.display = 'block';
-
         originalVideo.src = BACKEND_URL + item.original_video_url;
         originalVideo.style.display = 'block';
         originalPlaceholder.style.display = 'none';
@@ -586,8 +479,6 @@
              const playerContainer = originalVideo.closest('.video-player');
              if (playerContainer) playerContainer.style.aspectRatio = `${originalVideo.videoWidth} / ${originalVideo.videoHeight}`;
         }, { once: true });
-
-
         enhancedVideo.src = BACKEND_URL + item.enhanced_video_url;
         enhancedVideo.style.display = 'block';
         enhancedPlaceholder.style.display = 'none';
@@ -595,8 +486,6 @@
              const playerContainer = enhancedVideo.closest('.video-player');
              if (playerContainer) playerContainer.style.aspectRatio = `${enhancedVideo.videoWidth} / ${enhancedVideo.videoHeight}`;
         }, { once: true });
-
-
         psnrValue.textContent = item.metrics.psnr_avg;
         ssimValue.textContent = item.metrics.ssim_avg;
         processingTimeValue.textContent = item.processing_time + 's';
@@ -604,12 +493,10 @@
         processButton.disabled = true;
         processButton.classList.remove('enabled');
         processButton.textContent = 'Dimuat dari Riwayat';
-        
         window.scrollTo({ top: resultContainer.offsetTop - 80, behavior: 'smooth' });
     }
 
     processButton.addEventListener('click', processVideo);
-    
     document.addEventListener('DOMContentLoaded', loadHistory);
     </script>
 </body>
